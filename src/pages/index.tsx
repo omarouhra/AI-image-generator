@@ -6,6 +6,45 @@ export default function Home() {
   const [image, setImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
+  // function to handle input changes
+  const handleInputChange = (event: any) => {
+    setInput(event.target.value);
+  };
+
+  // function to generate image
+  const generateImages = async () => {
+    setIsLoading(true);
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer Your API KEY here}`,
+      },
+
+      body: JSON.stringify({
+        prompt: input,
+        n: 1,
+        size: "1024x1024",
+      }),
+    };
+
+    try {
+      const response = await fetch(
+        "https://api.openai.com/v1/images/generations",
+        options
+      );
+      const data = await response.json();
+      setIsLoading(false);
+      setImage(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const submitForm = (event: any) => {
+    event.preventDefault();
+    generateImages();
+  };
   return (
     <div className=" h-screen py-12">
       <main className=" flex h-full w-full flex-col items-center justify-start space-y-12 py-8">
